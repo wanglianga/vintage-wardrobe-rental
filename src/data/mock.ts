@@ -10,6 +10,8 @@ export const vintageItems: VintageItem[] = [
     size: 'M',
     wearLevel: 3,
     deposit: 800,
+    color: '驼色',
+    styleTags: ['休闲', '户外', '猎装'],
     image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2070s%20corduroy%20safari%20jacket%20tan%20brown%20on%20wooden%20hanger%20studio%20photography&image_size=portrait_4_3',
     description: '经典70年代灯芯绒猎装夹克，四口袋设计，铜扣微氧化，左肘处轻微磨损',
     condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
@@ -23,6 +25,8 @@ export const vintageItems: VintageItem[] = [
     size: 'L',
     wearLevel: 4,
     deposit: 500,
+    color: '牛仔蓝',
+    styleTags: ['休闲', '街头', '复古'],
     image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2080s%20high%20waist%20wide%20leg%20denim%20jeans%20faded%20blue%20studio%20photography&image_size=portrait_4_3',
     description: '80年代经典高腰阔腿裤，水洗渐变自然，右膝轻微破洞',
     condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
@@ -36,6 +40,8 @@ export const vintageItems: VintageItem[] = [
     size: 'S',
     wearLevel: 2,
     deposit: 1200,
+    color: '米白印花',
+    styleTags: ['优雅', '晚宴', '波西米亚'],
     image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2060s%20silk%20floral%20print%20shirt%20cream%20background%20studio%20photography&image_size=portrait_4_3',
     description: '60年代真丝印花衬衫，佩斯利花纹，面料柔软，领口微泛黄',
     condition: { stains: true, missingButtons: false, zipperIssue: false, liningIssue: false }
@@ -49,6 +55,8 @@ export const vintageItems: VintageItem[] = [
     size: 'M',
     wearLevel: 2,
     deposit: 1500,
+    color: '人字纹棕',
+    styleTags: ['正式', '英伦', '学院'],
     image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2050s%20tweed%20blazer%20herringbone%20brown%20on%20wooden%20hanger%20studio&image_size=portrait_4_3',
     description: '50年代英伦粗花呢西装外套，人字纹编织，肘部皮质补丁',
     condition: { stains: false, missingButtons: true, zipperIssue: false, liningIssue: false }
@@ -62,6 +70,8 @@ export const vintageItems: VintageItem[] = [
     size: 'S',
     wearLevel: 1,
     deposit: 1800,
+    color: '大地色系',
+    styleTags: ['波西米亚', '度假', '优雅'],
     image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2070s%20embroidered%20maxi%20dress%20earth%20tones%20bohemian%20studio%20photography&image_size=portrait_4_3',
     description: '70年代波西米亚刺绣长裙，手工花卉刺绣，品相极佳',
     condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
@@ -75,6 +85,8 @@ export const vintageItems: VintageItem[] = [
     size: 'M',
     wearLevel: 3,
     deposit: 900,
+    color: '驼色',
+    styleTags: ['波西米亚', '嬉皮', '休闲'],
     image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2070s%20suede%20fringe%20vest%20tan%20leather%20bohemian%20studio%20photography&image_size=portrait_4_3',
     description: '70年代麂皮流苏背心，自然磨损质感，流苏完整',
     condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: true }
@@ -88,6 +100,8 @@ export const vintageItems: VintageItem[] = [
     size: 'L',
     wearLevel: 4,
     deposit: 600,
+    color: '靛蓝',
+    styleTags: ['工装', '街头', '复古'],
     image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2040s%20workwear%20overalls%20denim%20faded%20indigo%20studio%20photography&image_size=portrait_4_3',
     description: '40年代工装背带裤，重磅丹宁，铜铆钉，自然岁月痕迹',
     condition: { stains: true, missingButtons: false, zipperIssue: true, liningIssue: false }
@@ -101,6 +115,8 @@ export const vintageItems: VintageItem[] = [
     size: 'M',
     wearLevel: 2,
     deposit: 1600,
+    color: '酒红',
+    styleTags: ['晚宴', '优雅', '复古'],
     image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2060s%20velvet%20dinner%20jacket%20deep%20burgundy%20studio%20photography&image_size=portrait_4_3',
     description: '60年代丝绒晚宴外套，深酒红，缎面翻领，品相优秀',
     condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
@@ -114,6 +130,8 @@ export const vintageItems: VintageItem[] = [
     size: 'S',
     wearLevel: 2,
     deposit: 700,
+    color: '红绿格纹',
+    styleTags: ['学院', '英伦', '优雅'],
     image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2060s%20tartan%20wool%20skirt%20A-line%20green%20red%20studio%20photography&image_size=portrait_4_3',
     description: '60年代A字格纹半裙，苏格兰格纹，羊毛面料，拉链顺滑',
     condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
@@ -127,6 +145,8 @@ export const vintageItems: VintageItem[] = [
     size: '38',
     wearLevel: 3,
     deposit: 1000,
+    color: '棕色',
+    styleTags: ['西部', '街头', '复古'],
     image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2080s%20cowboy%20boots%20brown%20leather%20embroidered%20studio%20photography&image_size=portrait_4_3',
     description: '80年代牛仔短靴，棕色皮革，手工刺绣花纹，鞋底磨损适中',
     condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: true }
@@ -140,6 +160,8 @@ export const vintageItems: VintageItem[] = [
     size: 'ONE SIZE',
     wearLevel: 2,
     deposit: 400,
+    color: '米白',
+    styleTags: ['波西米亚', '度假', '优雅'],
     image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2070s%20crochet%20shawl%20cream%20handmade%20bohemian%20studio%20photography&image_size=portrait_4_3',
     description: '70年代手工钩针披肩，奶油白色，花纹精致',
     condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
@@ -153,9 +175,56 @@ export const vintageItems: VintageItem[] = [
     size: 'L',
     wearLevel: 3,
     deposit: 1400,
+    color: '藏青',
+    styleTags: ['海军风', '正式', '复古'],
     image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2040s%20double%20breasted%20peacoat%20navy%20wool%20brass%20buttons%20studio&image_size=portrait_4_3',
     description: '40年代海军呢大衣，藏青色重磅羊毛，铜扣有绿锈',
     condition: { stains: false, missingButtons: true, zipperIssue: false, liningIssue: true }
+  },
+  {
+    id: 'item-013',
+    name: '复古牛皮医生包',
+    category: 'bags',
+    era: '1950s',
+    year: '1958',
+    size: 'ONE SIZE',
+    wearLevel: 2,
+    deposit: 1100,
+    color: '深棕',
+    styleTags: ['复古', '正式', '经典'],
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2050s%20leather%20doctor%20bag%20dark%20brown%20brass%20hardware%20studio%20photography&image_size=portrait_4_3',
+    description: '50年代经典医生包款式，牛皮材质，黄铜五金，品相完好',
+    condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
+  },
+  {
+    id: 'item-014',
+    name: '编织藤条手提包',
+    category: 'bags',
+    era: '1970s',
+    year: '1975',
+    size: 'ONE SIZE',
+    wearLevel: 3,
+    deposit: 350,
+    color: '藤编原色',
+    styleTags: ['度假', '波西米亚', '休闲'],
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2070s%20wicker%20rattan%20handbag%20natural%20beach%20bohemian%20studio%20photography&image_size=portrait_4_3',
+    description: '70年代手工藤编包，度假风格，皮制提手有自然磨损',
+    condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
+  },
+  {
+    id: 'item-015',
+    name: '珍珠项链套装',
+    category: 'accessories',
+    era: '1960s',
+    year: '1964',
+    size: 'ONE SIZE',
+    wearLevel: 1,
+    deposit: 600,
+    color: '奶白',
+    styleTags: ['优雅', '晚宴', '复古'],
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2060s%20pearl%20necklace%20set%20elegant%20cream%20jewelry%20studio%20photography&image_size=portrait_4_3',
+    description: '60年代仿珍珠三层项链，配耳夹套装，光泽度好',
+    condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
   }
 ]
 
@@ -325,7 +394,8 @@ export const categoryLabels: Record<string, string> = {
   outerwear: '外套',
   dress: '连衣裙',
   accessories: '配饰',
-  shoes: '鞋履'
+  shoes: '鞋履',
+  bags: '包袋'
 }
 
 export const wearLevelLabels: Record<number, string> = {

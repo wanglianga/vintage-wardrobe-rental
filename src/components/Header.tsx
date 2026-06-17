@@ -1,10 +1,10 @@
 import { useNavigate, useLocation } from 'react-router-dom'
-import { Shirt, ClipboardCheck, ArrowLeftRight } from 'lucide-react'
+import { Shirt, ClipboardCheck, ArrowLeftRight, Sparkles } from 'lucide-react'
 import { useStore } from '@/store'
 import { cn } from '@/lib/utils'
 
 export default function Header() {
-  const { role, setRole } = useStore()
+  const { role, setRole, builderSelectedItems } = useStore()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -21,19 +21,43 @@ export default function Header() {
           </span>
         </button>
 
-        <nav className="flex items-center gap-3">
+        <nav className="flex items-center gap-2">
           {role === 'customer' && (
-            <button
-              onClick={() => navigate('/')}
-              className={cn(
-                'px-3 py-1.5 text-xs rounded-sm transition-colors',
-                location.pathname === '/'
-                  ? 'bg-vintage-brown text-vintage-cream'
-                  : 'text-vintage-brown hover:bg-vintage-tan/20'
-              )}
-            >
-              浏览
-            </button>
+            <>
+              <button
+                onClick={() => navigate('/')}
+                className={cn(
+                  'px-3 py-1.5 text-xs rounded-sm transition-colors',
+                  location.pathname === '/'
+                    ? 'bg-vintage-brown text-vintage-cream'
+                    : 'text-vintage-brown hover:bg-vintage-tan/20'
+                )}
+              >
+                浏览
+              </button>
+              <button
+                onClick={() => navigate('/builder')}
+                className={cn(
+                  'px-3 py-1.5 text-xs rounded-sm transition-colors flex items-center gap-1',
+                  location.pathname === '/builder'
+                    ? 'bg-vintage-brown text-vintage-cream'
+                    : 'text-vintage-brown hover:bg-vintage-tan/20'
+                )}
+              >
+                <Sparkles className="w-3 h-3" />
+                搭配
+                {builderSelectedItems.length > 0 && (
+                  <span className={cn(
+                    'ml-0.5 text-[9px] px-1 rounded-full',
+                    location.pathname === '/builder'
+                      ? 'bg-vintage-cream text-vintage-brown'
+                      : 'bg-vintage-crimson text-white'
+                  )}>
+                    {builderSelectedItems.length}
+                  </span>
+                )}
+              </button>
+            </>
           )}
           {role === 'staff' && (
             <button

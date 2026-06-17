@@ -1,18 +1,18 @@
 import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Heart, ChevronRight } from 'lucide-react'
+import { Heart, ChevronRight, Sparkles, Plus } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { vintageItems, outfitSets, categoryLabels } from '@/data/mock'
+import { vintageItems, categoryLabels } from '@/data/mock'
 import { useStore } from '@/store'
 import EraTag from '@/components/EraTag'
 import FilterBar from '@/components/FilterBar'
 import ItemCard from '@/components/ItemCard'
 import DepositTag from '@/components/DepositTag'
-import type { Category, WearLevel } from '@/types'
+import type { Category, WearLevel, VintageItem } from '@/types'
 
 export default function BrowsePage() {
   const navigate = useNavigate()
-  const { favorites, toggleFavorite } = useStore()
+  const { favorites, toggleFavorite, outfitSets, builderSelectedItems, toggleBuilderItem } = useStore()
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
   const [selectedEra, setSelectedEra] = useState<string | null>(null)
   const [selectedWear, setSelectedWear] = useState<WearLevel | null>(null)
@@ -39,21 +39,42 @@ export default function BrowsePage() {
       />
 
       <div className="max-w-7xl mx-auto px-4 pt-4">
-        <div className="flex items-center justify-between mb-3">
-          <p className="text-xs text-vintage-muted">
-            {filteredItems.length} 件古着单品
+        <div className="flex items-center justify-between mb-3 gap-2">
+          <p className="text-xs text-vintage-muted flex-shrink-0">
+            {showOutfits ? `${outfitSets.length} 套搭配方案` : `${filteredItems.length} 件古着单品`}
           </p>
-          <button
-            onClick={() => setShowOutfits(!showOutfits)}
-            className={cn(
-              'text-xs px-3 py-1.5 rounded-sm border transition-all',
-              showOutfits
-                ? 'bg-vintage-brown text-vintage-cream border-vintage-brown'
-                : 'border-vintage-border text-vintage-brown hover:border-vintage-brown/50'
+          <div className="flex items-center gap-2">
+            {!showOutfits && (
+              <button
+                onClick={() => navigate('/builder')}
+                className={cn(
+                  'text-xs px-3 py-1.5 rounded-sm border transition-all flex items-center gap-1',
+                  builderSelectedItems.length > 0
+                    ? 'bg-vintage-crimson text-vintage-cream border-vintage-crimson'
+                    : 'border-vintage-gold text-vintage-brown hover:bg-vintage-gold/10'
+                )}
+              >
+                <Sparkles className="w-3 h-3" />
+                搭配工作台
+                {builderSelectedItems.length > 0 && (
+                  <span className="bg-vintage-cream text-vintage-crimson text-[9px] px-1 rounded-full">
+                    {builderSelectedItems.length}
+                  </span>
+                )}
+              </button>
             )}
-          >
-            {showOutfits ? '查看单品' : '查看搭配套装'}
-          </button>
+            <button
+              onClick={() => setShowOutfits(!showOutfits)}
+              className={cn(
+                'text-xs px-3 py-1.5 rounded-sm border transition-all',
+                showOutfits
+                  ? 'bg-vintage-brown text-vintage-cream border-vintage-brown'
+                  : 'border-vintage-border text-vintage-brown hover:border-vintage-brown/50'
+              )}
+            >
+              {showOutfits ? '查看单品' : '查看搭配套装'}
+            </button>
+          </div>
         </div>
 
         {showOutfits ? (
@@ -135,10 +156,58 @@ export default function BrowsePage() {
         ) : (
           <div className="columns-2 gap-3 pb-8">
             {filteredItems.map((item, idx) => (
-              <div key={item.id} className="break-inside-avoid mb-3">
+              <div key={item.id} className="break-inside-avoid mb-3 relative group">
                 <ItemCard item={item} index={idx} />
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    toggleBuilderItem(item.id)
+                  }}
+                  className={cn(
+                    'absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center shadow-md transition-all z-10',
+                    builderSelectedItems.includes(item.id)
+                      ? 'bg-vintage-crimson text-white'
+                      : 'bg-white/90 text-vintage-brown opacity-0 group-hover:opacity-100 hover:bg-vintage-gold hover:text-white'
+                  )}
+                >
+                  <Plus className={cn(
+                    'w-3.5 h-3.5 transition-transform',
+                    builderSelectedItems.includes(item.id) && 'rotate-45'
+                  )} />
+                </button>
               </div>
             ))}
+          </div>
+        )}
+
+        {builderSelectedItems.length > 0 && (
+          <div className="fixed bottom-4 left-4 right-4 max-w-md mx-auto bg-vintage-brown text-vintage-cream rounded shadow-xl p-3 flex items-center gap-3 animate-fadeInUp z-50">
+            <div className="flex -space-x-2">
+              {builderSelectedItems.slice(0, 4).map((id) => {
+                const item = vintageItems.find((i) => i.id === id)
+                return item ? (
+                  <div key={id} className="w-8 h-8 rounded overflow-hidden border-2 border-vintage-brown bg-vintage-tan/20">
+                    <img src={item.image} alt="" className="w-full h-full object-cover" />
+                  </div>
+                ) : null
+              })}
+              {builderSelectedItems.length > 4 && (
+                <div className="w-8 h-8 rounded bg-vintage-crimson border-2 border-vintage-brown flex items-center justify-center text-[9px] font-bold">
+                  +{builderSelectedItems.length - 4}
+                </div>
+              )}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-medium">已选 {builderSelectedItems.length} 件单品</p>
+              <p className="text-[10px] text-vintage-cream/70">点击前往搭配工作台</p>
+            </div>
+            <button
+              onClick={() => navigate('/builder')}
+              className="px-3 py-1.5 bg-vintage-crimson text-white text-[11px] rounded-sm font-medium hover:bg-vintage-crimson/90 transition-colors flex items-center gap-1"
+            >
+              <Sparkles className="w-3 h-3" />
+              去搭配
+            </button>
           </div>
         )}
 

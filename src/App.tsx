@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import BrowsePage from "@/pages/BrowsePage";
 import OutfitDetailPage from "@/pages/OutfitDetailPage";
 import ReturnsPage from "@/pages/ReturnsPage";
+import OutfitBuilderPage from "@/pages/OutfitBuilderPage";
 
 export default function App() {
   return (
@@ -12,6 +13,7 @@ export default function App() {
         <Route path="/" element={<BrowsePage />} />
         <Route path="/outfit/:id" element={<OutfitDetailPage />} />
         <Route path="/returns" element={<ReturnsPage />} />
+        <Route path="/builder" element={<OutfitBuilderPage />} />
       </Routes>
     </Router>
   );
