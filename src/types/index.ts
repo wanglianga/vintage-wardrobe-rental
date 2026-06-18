@@ -7,6 +7,12 @@ export type Role = 'customer' | 'staff'
 export type ConflictType = 'size' | 'color' | 'era' | 'rental_period'
 export type DamageLevel = 'mild' | 'moderate' | 'severe'
 
+export interface DateRange {
+  start: string
+  end: string
+  orderId?: string
+}
+
 export interface VintageItem {
   id: string
   name: string
@@ -20,6 +26,7 @@ export interface VintageItem {
   description: string
   color?: string
   styleTags?: string[]
+  occupiedPeriods: DateRange[]
   condition: {
     stains: boolean
     missingButtons: boolean

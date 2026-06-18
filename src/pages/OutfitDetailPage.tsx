@@ -29,15 +29,11 @@ export default function OutfitDetailPage() {
     [outfit]
   )
 
-  if (!outfit) {
-    return (
-      <div className="min-h-screen bg-vintage-cream flex items-center justify-center">
-        <p className="text-vintage-muted">搭配套装不存在</p>
-      </div>
-    )
-  }
+  const isFav = useMemo(
+    () => (outfit ? favorites.includes(outfit.id) : false),
+    [outfit, favorites]
+  )
 
-  const isFav = favorites.includes(outfit.id)
   const rentalDays = useMemo(() => {
     if (!startDate || !endDate) return 0
     return Math.ceil((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24))
@@ -48,6 +44,14 @@ export default function OutfitDetailPage() {
     const diff = Math.ceil((new Date(endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
     return diff
   }, [endDate])
+
+  if (!outfit) {
+    return (
+      <div className="min-h-screen bg-vintage-cream flex items-center justify-center">
+        <p className="text-vintage-muted">搭配套装不存在</p>
+      </div>
+    )
+  }
 
   const handleConfirmRental = () => {
     if (!startDate || !endDate) return

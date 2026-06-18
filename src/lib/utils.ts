@@ -1,9 +1,57 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import type { VintageItem, OutfitConflict, ReturnCheckItem, DamageAssessment, DamageLevel } from '@/types'
+import type { VintageItem, OutfitConflict, ReturnCheckItem, DamageAssessment, DamageLevel, DateRange } from '@/types'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
+}
+
+export function isDateRangeOverlapping(range1: DateRange, range2: DateRange): boolean {
+  const start1 = new Date(range1.start)
+  const end1 = new Date(range1.end)
+  const start2 = new Date(range2.start)
+  const end2 = new Date(range2.end)
+  return start1 <= end2 && start2 <= end1
+}
+
+export function getItemAvailability(item: VintageItem, startDate: string, endDate: string): { available: boolean; conflictingPeriods: DateRange[] } {
+  const requestedRange: DateRange = { start: startDate, end: endDate }
+  const conflictingPeriods: DateRange[] = []
+
+  for (const period of item.occupiedPeriods) {
+    if (isDateRangeOverlapping(requestedRange, period)) {
+      conflictingPeriods.push(period)
+    }
+  }
+
+  return {
+    available: conflictingPeriods.length === 0,
+    conflictingPeriods
+  }
+}
+
+export function checkItemAvailabilityForSet(
+  items: VintageItem[],
+  startDate: string | null,
+  endDate: string | null
+): { availableItems: VintageItem[]; unavailableItems: { item: VintageItem; conflictingPeriods: DateRange[] }[] } {
+  if (!startDate || !endDate) {
+    return { availableItems: items, unavailableItems: [] }
+  }
+
+  const availableItems: VintageItem[] = []
+  const unavailableItems: { item: VintageItem; conflictingPeriods: DateRange[] }[] = []
+
+  for (const item of items) {
+    const availability = getItemAvailability(item, startDate, endDate)
+    if (availability.available) {
+      availableItems.push(item)
+    } else {
+      unavailableItems.push({ item, conflictingPeriods: availability.conflictingPeriods })
+    }
+  }
+
+  return { availableItems, unavailableItems }
 }
 
 const sizeGroups: Record<string, string[]> = {
@@ -17,7 +65,21 @@ const sizeGroups: Record<string, string[]> = {
 export function checkOutfitConflicts(items: VintageItem[], startDate?: string | null, endDate?: string | null): OutfitConflict[] {
   const conflicts: OutfitConflict[] = []
 
-  if (items.length < 2) return conflicts
+  if (items.length < 2) {
+    if (startDate && endDate && items.length === 1) {
+      const availability = getItemAvailability(items[0], startDate, endDate)
+      if (!availability.available) {
+        const period = availability.conflictingPeriods[0]
+        conflicts.push({
+          type: 'rental_period',
+          severity: 'error',
+          message: `「${items[0].name}」在 ${startDate} 至 ${endDate} 期间不可租赁（已被预约：${period.start} 至 ${period.end}）`,
+          affectedItems: [items[0].id, '']
+        })
+      }
+    }
+    return conflicts
+  }
 
   for (let i = 0; i < items.length; i++) {
     for (let j = i + 1; j < items.length; j++) {
@@ -80,15 +142,29 @@ export function checkOutfitConflicts(items: VintageItem[], startDate?: string | 
         message: '归还日期不能早于起租日期',
         affectedItems: ['', '']
       })
-    }
-    const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24))
-    if (days < 3) {
-      conflicts.push({
-        type: 'rental_period',
-        severity: 'warning',
-        message: '租期建议不少于3天',
-        affectedItems: ['', '']
-      })
+    } else {
+      const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24))
+      if (days < 3) {
+        conflicts.push({
+          type: 'rental_period',
+          severity: 'warning',
+          message: '租期建议不少于3天',
+          affectedItems: ['', '']
+        })
+      }
+
+      const { unavailableItems } = checkItemAvailabilityForSet(items, startDate, endDate)
+      for (const { item, conflictingPeriods } of unavailableItems) {
+        const periodStr = conflictingPeriods
+          .map(p => `${p.start} 至 ${p.end}`)
+          .join('、')
+        conflicts.push({
+          type: 'rental_period',
+          severity: 'error',
+          message: `「${item.name}」在 ${startDate} 至 ${endDate} 期间不可租赁（已被预约：${periodStr}），建议拆开单品分别预约或选择其他日期`,
+          affectedItems: [item.id, '']
+        })
+      }
     }
   }
 

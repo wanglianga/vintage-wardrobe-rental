@@ -2,13 +2,13 @@ import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Heart, ChevronRight, Sparkles, Plus } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { vintageItems, categoryLabels } from '@/data/mock'
+import { vintageItems } from '@/data/mock'
 import { useStore } from '@/store'
 import EraTag from '@/components/EraTag'
 import FilterBar from '@/components/FilterBar'
 import ItemCard from '@/components/ItemCard'
 import DepositTag from '@/components/DepositTag'
-import type { Category, WearLevel, VintageItem } from '@/types'
+import type { Category, WearLevel } from '@/types'
 
 export default function BrowsePage() {
   const navigate = useNavigate()

@@ -2,7 +2,8 @@ import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, Plus, Minus, Save, Shirt, Calendar, AlertTriangle, AlertCircle, CheckCircle, Sparkles, Coins, ShoppingCart, Package } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { checkOutfitConflicts, calculateMergedDeposit } from '@/lib/utils'
+import { checkOutfitConflicts, calculateMergedDeposit, checkItemAvailabilityForSet, getItemAvailability } from '@/lib/utils'
+import type { DateRange } from '@/types'
 import { vintageItems, categoryLabels } from '@/data/mock'
 import { useStore } from '@/store'
 import EraTag from '@/components/EraTag'
@@ -49,6 +50,23 @@ export default function OutfitBuilderPage() {
     if (!startDate || !endDate) return 0
     return Math.ceil((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24))
   }, [startDate, endDate])
+
+  const itemAvailability = useMemo(() => {
+    return checkItemAvailabilityForSet(selectedItems, startDate, endDate)
+  }, [selectedItems, startDate, endDate])
+
+  const unavailableItemIds = useMemo(() => {
+    return new Set(itemAvailability.unavailableItems.map((u) => u.item.id))
+  }, [itemAvailability])
+
+  const getItemUnavailablePeriods = (itemId: string): DateRange[] => {
+    const found = itemAvailability.unavailableItems.find((u) => u.item.id === itemId)
+    return found ? found.conflictingPeriods : []
+  }
+
+  const isItemAvailable = (itemId: string): boolean => {
+    return !unavailableItemIds.has(itemId)
+  }
 
   const categories: (Category | null)[] = [null, 'outerwear', 'tops', 'bottoms', 'dress', 'shoes', 'accessories', 'bags']
 
@@ -179,40 +197,70 @@ export default function OutfitBuilderPage() {
               <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-96 overflow-y-auto pr-1">
                 {filteredItems.map((item) => {
                   const isSelected = builderSelectedItems.includes(item.id)
+                  let itemAvailable = true
+                  let itemConflicts: DateRange[] = []
+                  if (startDate && endDate) {
+                    const avail = getItemAvailability(item, startDate, endDate)
+                    itemAvailable = avail.available
+                    itemConflicts = avail.conflictingPeriods
+                  }
                   return (
                     <button
                       key={item.id}
                       onClick={() => toggleBuilderItem(item.id)}
+                      disabled={!itemAvailable}
                       className={cn(
                         'relative rounded overflow-hidden border-2 transition-all group',
                         isSelected
                           ? 'border-vintage-crimson ring-2 ring-vintage-crimson/20'
-                          : 'border-vintage-border/30 hover:border-vintage-gold/60'
+                          : !itemAvailable
+                            ? 'border-vintage-crimson/30 opacity-60 cursor-not-allowed'
+                            : 'border-vintage-border/30 hover:border-vintage-gold/60'
                       )}
                     >
-                      <div className="relative aspect-[3/4] bg-vintage-tan/10">
+                      <div className={cn(
+                        'relative aspect-[3/4] bg-vintage-tan/10',
+                        !itemAvailable && 'opacity-70'
+                      )}>
                         <img
                           src={item.image}
                           alt={item.name}
                           className="w-full h-full object-cover"
                           loading="lazy"
                         />
+                        {!itemAvailable && (
+                          <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                            <AlertCircle className="w-5 h-5 text-white" />
+                          </div>
+                        )}
                         <div className="absolute top-1 left-1">
                           <EraTag era={item.era} className="!text-[8px] !px-1 !py-0.5" />
                         </div>
+                        {!itemAvailable && (
+                          <div className="absolute bottom-1 left-1 right-1">
+                            <div className="text-[7px] bg-vintage-crimson/90 text-white px-1 py-0.5 rounded text-center">
+                              {itemConflicts.map(p => `${p.start.slice(5)}~${p.end.slice(5)}`).join(' ')}
+                            </div>
+                          </div>
+                        )}
                         <div
                           className={cn(
                             'absolute top-1 right-1 w-5 h-5 rounded-full flex items-center justify-center transition-all',
                             isSelected
                               ? 'bg-vintage-crimson text-white'
-                              : 'bg-white/80 text-vintage-border group-hover:bg-vintage-gold/20'
+                              : !itemAvailable
+                                ? 'bg-vintage-border/50 text-white/50 cursor-not-allowed'
+                                : 'bg-white/80 text-vintage-border group-hover:bg-vintage-gold/20'
                           )}
                         >
                           {isSelected ? <Minus className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
                         </div>
                       </div>
                       <div className="p-1.5 bg-white">
-                        <p className="text-[10px] text-vintage-brown truncate font-medium">{item.name}</p>
+                        <p className={cn(
+                          'text-[10px] truncate font-medium',
+                          !itemAvailable ? 'text-vintage-crimson/70' : 'text-vintage-brown'
+                        )}>{item.name}</p>
                         <div className="flex items-center justify-between mt-0.5">
                           <span className="text-[9px] text-vintage-muted">{item.size}</span>
                           <span className="text-[9px] text-vintage-crimson font-medium">¥{item.deposit}</span>
@@ -286,37 +334,67 @@ export default function OutfitBuilderPage() {
                   </div>
                 ) : (
                   <div className="space-y-2">
-                    {selectedItems.map((item) => (
-                      <div
-                        key={item.id}
-                        className="flex items-center gap-2 p-2 bg-vintage-cream/40 rounded-sm"
-                      >
-                        <div className="w-10 h-12 rounded-sm overflow-hidden bg-vintage-tan/20 flex-shrink-0">
-                          <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-[11px] font-medium text-vintage-brown truncate">{item.name}</p>
-                          <div className="flex items-center gap-1.5 mt-0.5">
-                            <span className="text-[9px] text-vintage-muted">{categoryLabels[item.category]}</span>
-                            <span className="text-vintage-border/60">·</span>
-                            <span className="text-[9px] text-vintage-muted">{item.size}</span>
-                            {item.color && (
-                              <>
-                                <span className="text-vintage-border/60">·</span>
-                                <span className="text-[9px] text-vintage-muted">{item.color}</span>
-                              </>
+                    {selectedItems.map((item) => {
+                      const available = isItemAvailable(item.id)
+                      const periods = getItemUnavailablePeriods(item.id)
+                      return (
+                        <div
+                          key={item.id}
+                          className={cn(
+                            'flex items-center gap-2 p-2 rounded-sm',
+                            available ? 'bg-vintage-cream/40' : 'bg-vintage-crimson/5 border border-vintage-crimson/20'
+                          )}
+                        >
+                          <div className={cn(
+                            'w-10 h-12 rounded-sm overflow-hidden flex-shrink-0 relative',
+                            available ? 'bg-vintage-tan/20' : 'bg-vintage-crimson/20 opacity-70'
+                          )}>
+                            <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                            {!available && (
+                              <div className="absolute inset-0 bg-vintage-crimson/20 flex items-center justify-center">
+                                <AlertCircle className="w-4 h-4 text-vintage-crimson" />
+                              </div>
                             )}
                           </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-1">
+                              <p className={cn(
+                                'text-[11px] font-medium truncate',
+                                available ? 'text-vintage-brown' : 'text-vintage-crimson line-through'
+                              )}>{item.name}</p>
+                              {!available && (
+                                <span className="text-[8px] px-1.5 py-0.5 bg-vintage-crimson/10 text-vintage-crimson rounded flex-shrink-0">
+                                  不可租
+                                </span>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-1.5 mt-0.5">
+                              <span className="text-[9px] text-vintage-muted">{categoryLabels[item.category]}</span>
+                              <span className="text-vintage-border/60">·</span>
+                              <span className="text-[9px] text-vintage-muted">{item.size}</span>
+                              {item.color && (
+                                <>
+                                  <span className="text-vintage-border/60">·</span>
+                                  <span className="text-[9px] text-vintage-muted">{item.color}</span>
+                                </>
+                              )}
+                            </div>
+                            {!available && periods.length > 0 && (
+                              <p className="text-[8px] text-vintage-crimson/70 mt-0.5">
+                                已被预约：{periods.map(p => `${p.start}~${p.end}`).join('、')}
+                              </p>
+                            )}
+                          </div>
+                          <DepositTag amount={item.deposit} size="sm" />
+                          <button
+                            onClick={() => toggleBuilderItem(item.id)}
+                            className="p-1 text-vintage-border hover:text-vintage-crimson transition-colors"
+                          >
+                            <Minus className="w-3.5 h-3.5" />
+                          </button>
                         </div>
-                        <DepositTag amount={item.deposit} size="sm" />
-                        <button
-                          onClick={() => toggleBuilderItem(item.id)}
-                          className="p-1 text-vintage-border hover:text-vintage-crimson transition-colors"
-                        >
-                          <Minus className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    ))}
+                      )
+                    })}
                   </div>
                 )}
               </div>

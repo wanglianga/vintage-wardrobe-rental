@@ -14,6 +14,9 @@ export const vintageItems: VintageItem[] = [
     styleTags: ['休闲', '户外', '猎装'],
     image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2070s%20corduroy%20safari%20jacket%20tan%20brown%20on%20wooden%20hanger%20studio%20photography&image_size=portrait_4_3',
     description: '经典70年代灯芯绒猎装夹克，四口袋设计，铜扣微氧化，左肘处轻微磨损',
+    occupiedPeriods: [
+      { start: '2026-06-10', end: '2026-06-17', orderId: 'order-001' }
+    ],
     condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
   },
   {
@@ -29,6 +32,10 @@ export const vintageItems: VintageItem[] = [
     styleTags: ['休闲', '街头', '复古'],
     image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2080s%20high%20waist%20wide%20leg%20denim%20jeans%20faded%20blue%20studio%20photography&image_size=portrait_4_3',
     description: '80年代经典高腰阔腿裤，水洗渐变自然，右膝轻微破洞',
+    occupiedPeriods: [
+      { start: '2026-06-10', end: '2026-06-17', orderId: 'order-001' },
+      { start: '2026-06-25', end: '2026-06-30', orderId: 'order-future-001' }
+    ],
     condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
   },
   {
@@ -44,6 +51,10 @@ export const vintageItems: VintageItem[] = [
     styleTags: ['优雅', '晚宴', '波西米亚'],
     image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2060s%20silk%20floral%20print%20shirt%20cream%20background%20studio%20photography&image_size=portrait_4_3',
     description: '60年代真丝印花衬衫，佩斯利花纹，面料柔软，领口微泛黄',
+    occupiedPeriods: [
+      { start: '2026-06-05', end: '2026-06-12', orderId: 'order-002' },
+      { start: '2026-06-20', end: '2026-06-23', orderId: 'order-future-002' }
+    ],
     condition: { stains: true, missingButtons: false, zipperIssue: false, liningIssue: false }
   },
   {
@@ -59,6 +70,10 @@ export const vintageItems: VintageItem[] = [
     styleTags: ['正式', '英伦', '学院'],
     image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2050s%20tweed%20blazer%20herringbone%20brown%20on%20wooden%20hanger%20studio&image_size=portrait_4_3',
     description: '50年代英伦粗花呢西装外套，人字纹编织，肘部皮质补丁',
+    occupiedPeriods: [
+      { start: '2026-06-08', end: '2026-06-15', orderId: 'order-003' },
+      { start: '2026-07-01', end: '2026-07-05', orderId: 'order-future-003' }
+    ],
     condition: { stains: false, missingButtons: true, zipperIssue: false, liningIssue: false }
   },
   {
@@ -74,6 +89,9 @@ export const vintageItems: VintageItem[] = [
     styleTags: ['波西米亚', '度假', '优雅'],
     image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2070s%20embroidered%20maxi%20dress%20earth%20tones%20bohemian%20studio%20photography&image_size=portrait_4_3',
     description: '70年代波西米亚刺绣长裙，手工花卉刺绣，品相极佳',
+    occupiedPeriods: [
+      { start: '2026-06-12', end: '2026-06-19', orderId: 'order-005' }
+    ],
     condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
   },
   {
@@ -89,6 +107,7 @@ export const vintageItems: VintageItem[] = [
     styleTags: ['波西米亚', '嬉皮', '休闲'],
     image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2070s%20suede%20fringe%20vest%20tan%20leather%20bohemian%20studio%20photography&image_size=portrait_4_3',
     description: '70年代麂皮流苏背心，自然磨损质感，流苏完整',
+    occupiedPeriods: [],
     condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: true }
   },
   {
@@ -104,6 +123,9 @@ export const vintageItems: VintageItem[] = [
     styleTags: ['工装', '街头', '复古'],
     image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2040s%20workwear%20overalls%20denim%20faded%20indigo%20studio%20photography&image_size=portrait_4_3',
     description: '40年代工装背带裤，重磅丹宁，铜铆钉，自然岁月痕迹',
+    occupiedPeriods: [
+      { start: '2026-06-01', end: '2026-06-08', orderId: 'order-004' }
+    ],
     condition: { stains: true, missingButtons: false, zipperIssue: true, liningIssue: false }
   },
   {
@@ -119,6 +141,10 @@ export const vintageItems: VintageItem[] = [
     styleTags: ['晚宴', '优雅', '复古'],
     image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2060s%20velvet%20dinner%20jacket%20deep%20burgundy%20studio%20photography&image_size=portrait_4_3',
     description: '60年代丝绒晚宴外套，深酒红，缎面翻领，品相优秀',
+    occupiedPeriods: [
+      { start: '2026-06-05', end: '2026-06-12', orderId: 'order-002' },
+      { start: '2026-06-22', end: '2026-06-26', orderId: 'order-future-004' }
+    ],
     condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
   },
   {
@@ -134,6 +160,10 @@ export const vintageItems: VintageItem[] = [
     styleTags: ['学院', '英伦', '优雅'],
     image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2060s%20tartan%20wool%20skirt%20A-line%20green%20red%20studio%20photography&image_size=portrait_4_3',
     description: '60年代A字格纹半裙，苏格兰格纹，羊毛面料，拉链顺滑',
+    occupiedPeriods: [
+      { start: '2026-06-08', end: '2026-06-15', orderId: 'order-003' },
+      { start: '2026-06-28', end: '2026-07-02', orderId: 'order-future-005' }
+    ],
     condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
   },
   {
@@ -149,6 +179,9 @@ export const vintageItems: VintageItem[] = [
     styleTags: ['西部', '街头', '复古'],
     image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2080s%20cowboy%20boots%20brown%20leather%20embroidered%20studio%20photography&image_size=portrait_4_3',
     description: '80年代牛仔短靴，棕色皮革，手工刺绣花纹，鞋底磨损适中',
+    occupiedPeriods: [
+      { start: '2026-06-08', end: '2026-06-15', orderId: 'order-003' }
+    ],
     condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: true }
   },
   {
@@ -164,6 +197,10 @@ export const vintageItems: VintageItem[] = [
     styleTags: ['波西米亚', '度假', '优雅'],
     image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2070s%20crochet%20shawl%20cream%20handmade%20bohemian%20studio%20photography&image_size=portrait_4_3',
     description: '70年代手工钩针披肩，奶油白色，花纹精致',
+    occupiedPeriods: [
+      { start: '2026-06-10', end: '2026-06-17', orderId: 'order-001' },
+      { start: '2026-06-12', end: '2026-06-19', orderId: 'order-005' }
+    ],
     condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
   },
   {
@@ -179,6 +216,9 @@ export const vintageItems: VintageItem[] = [
     styleTags: ['海军风', '正式', '复古'],
     image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2040s%20double%20breasted%20peacoat%20navy%20wool%20brass%20buttons%20studio&image_size=portrait_4_3',
     description: '40年代海军呢大衣，藏青色重磅羊毛，铜扣有绿锈',
+    occupiedPeriods: [
+      { start: '2026-06-19', end: '2026-06-24', orderId: 'order-future-006' }
+    ],
     condition: { stains: false, missingButtons: true, zipperIssue: false, liningIssue: true }
   },
   {
@@ -194,6 +234,7 @@ export const vintageItems: VintageItem[] = [
     styleTags: ['复古', '正式', '经典'],
     image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2050s%20leather%20doctor%20bag%20dark%20brown%20brass%20hardware%20studio%20photography&image_size=portrait_4_3',
     description: '50年代经典医生包款式，牛皮材质，黄铜五金，品相完好',
+    occupiedPeriods: [],
     condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
   },
   {
@@ -209,6 +250,9 @@ export const vintageItems: VintageItem[] = [
     styleTags: ['度假', '波西米亚', '休闲'],
     image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2070s%20wicker%20rattan%20handbag%20natural%20beach%20bohemian%20studio%20photography&image_size=portrait_4_3',
     description: '70年代手工藤编包，度假风格，皮制提手有自然磨损',
+    occupiedPeriods: [
+      { start: '2026-06-21', end: '2026-06-27', orderId: 'order-future-007' }
+    ],
     condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
   },
   {
@@ -224,6 +268,9 @@ export const vintageItems: VintageItem[] = [
     styleTags: ['优雅', '晚宴', '复古'],
     image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2060s%20pearl%20necklace%20set%20elegant%20cream%20jewelry%20studio%20photography&image_size=portrait_4_3',
     description: '60年代仿珍珠三层项链，配耳夹套装，光泽度好',
+    occupiedPeriods: [
+      { start: '2026-06-24', end: '2026-06-28', orderId: 'order-future-008' }
+    ],
     condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
   }
 ]

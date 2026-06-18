@@ -40,7 +40,6 @@ export default function DatePicker({
 
   const startObj = startDate ? new Date(startDate) : null
   const endObj = endDate ? new Date(endDate) : null
-  const returnObj = returnDate ? new Date(returnDate) : null
 
   const rentalDays = useMemo(() => {
     if (!startDate || !endDate) return 0

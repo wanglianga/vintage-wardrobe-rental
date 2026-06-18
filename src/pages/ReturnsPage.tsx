@@ -21,8 +21,6 @@ export default function ReturnsPage() {
   const activeOrders = rentalOrders.filter((o) => o.status !== 'returned')
   const completedOrders = rentalOrders.filter((o) => o.status === 'returned')
 
-  const selectedOrder = rentalOrders.find((o) => o.id === selectedOrderId)
-
   const handleSaveCheck = (orderId: string, checks: ReturnCheckItem[]) => {
     updateReturnCheck(orderId, checks)
     setSavedOrderId(orderId)
