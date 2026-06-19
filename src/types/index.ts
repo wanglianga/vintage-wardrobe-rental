@@ -6,6 +6,7 @@ export type RenewalStatus = 'pending' | 'approved' | 'rejected'
 export type Role = 'customer' | 'staff'
 export type ConflictType = 'size' | 'color' | 'era' | 'rental_period'
 export type DamageLevel = 'mild' | 'moderate' | 'severe'
+export type ItemStatus = 'available' | 'rented' | 'maintenance'
 
 export interface DateRange {
   start: string
@@ -27,12 +28,35 @@ export interface VintageItem {
   color?: string
   styleTags?: string[]
   occupiedPeriods: DateRange[]
+  maintenancePeriods?: DateRange[]
+  sameStyleGroupId?: string
   condition: {
     stains: boolean
     missingButtons: boolean
     zipperIssue: boolean
     liningIssue: boolean
   }
+}
+
+export interface ItemDetailedAvailability {
+  status: ItemStatus
+  available: boolean
+  conflictingPeriods: DateRange[]
+  maintenancePeriods: DateRange[]
+  message: string
+}
+
+export interface StyleAlternative {
+  item: VintageItem
+  matchScore: number
+  matchReasons: string[]
+}
+
+export interface OutfitConsistencyResult {
+  isConsistent: boolean
+  sizeConflicts: string[]
+  styleConflicts: string[]
+  eraConflicts: string[]
 }
 
 export interface OutfitConflict {

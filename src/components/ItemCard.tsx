@@ -22,8 +22,9 @@ export default function ItemCard({ item, index }: ItemCardProps) {
 
   return (
     <div
-      className="group animate-fadeInUp"
+      className="group animate-fadeInUp cursor-pointer"
       style={{ animationDelay: `${index * 60}ms` }}
+      onClick={() => navigate(`/item/${item.id}`)}
     >
       <div className="relative bg-white rounded overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 hover:-translate-y-0.5">
         <div className="relative overflow-hidden">

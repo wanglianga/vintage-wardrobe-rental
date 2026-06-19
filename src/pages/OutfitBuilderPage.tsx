@@ -1,19 +1,19 @@
 import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, Plus, Minus, Save, Shirt, Calendar, AlertTriangle, AlertCircle, CheckCircle, Sparkles, Coins, ShoppingCart, Package } from 'lucide-react'
+import { ArrowLeft, Plus, Minus, Save, Shirt, Calendar, AlertTriangle, AlertCircle, CheckCircle, Sparkles, Coins, ShoppingCart, Package, RefreshCw, Eye } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { checkOutfitConflicts, calculateMergedDeposit, checkItemAvailabilityForSet, getItemAvailability } from '@/lib/utils'
-import type { DateRange } from '@/types'
+import { checkOutfitConflicts, calculateMergedDeposit, checkItemAvailabilityForSet, getItemAvailability, getItemDetailedAvailability, getItemStatusLabel, getItemStatusColor, findStyleAlternatives, findSameStyleAvailableSizes, getItemsCombinedOccupiedDates, evaluateOutfitConsistency } from '@/lib/utils'
+import type { DateRange, VintageItem, StyleAlternative } from '@/types'
 import { vintageItems, categoryLabels } from '@/data/mock'
 import { useStore } from '@/store'
 import EraTag from '@/components/EraTag'
 import DepositTag from '@/components/DepositTag'
 import DatePicker from '@/components/DatePicker'
-import type { Category, VintageItem, RentalOrder, OutfitSet } from '@/types'
+import type { Category, RentalOrder, OutfitSet } from '@/types'
 
 export default function OutfitBuilderPage() {
   const navigate = useNavigate()
-  const { builderSelectedItems, toggleBuilderItem, clearBuilderItems, addOutfitSet, addRentalOrder } = useStore()
+  const { builderSelectedItems, toggleBuilderItem, clearBuilderItems, addOutfitSet, addRentalOrder, setBuilderItems } = useStore()
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
   const [startDate, setStartDate] = useState<string | null>(null)
   const [endDate, setEndDate] = useState<string | null>(null)
@@ -23,6 +23,7 @@ export default function OutfitBuilderPage() {
   const [rentMode, setRentMode] = useState<'set' | 'individual'>('set')
   const [savedSuccess, setSavedSuccess] = useState(false)
   const [rentSuccess, setRentSuccess] = useState(false)
+  const [expandedAlternatives, setExpandedAlternatives] = useState<string | null>(null)
 
   const selectedItems = useMemo(
     () => builderSelectedItems.map((id) => vintageItems.find((i) => i.id === id)).filter(Boolean) as VintageItem[],
@@ -32,6 +33,11 @@ export default function OutfitBuilderPage() {
   const conflicts = useMemo(
     () => checkOutfitConflicts(selectedItems, startDate, endDate),
     [selectedItems, startDate, endDate]
+  )
+
+  const consistency = useMemo(
+    () => evaluateOutfitConsistency(selectedItems),
+    [selectedItems]
   )
 
   const depositInfo = useMemo(
@@ -58,6 +64,32 @@ export default function OutfitBuilderPage() {
   const unavailableItemIds = useMemo(() => {
     return new Set(itemAvailability.unavailableItems.map((u) => u.item.id))
   }, [itemAvailability])
+
+  const occupiedDates = useMemo(
+    () => getItemsCombinedOccupiedDates(selectedItems),
+    [selectedItems]
+  )
+
+  const alternativesMap = useMemo(() => {
+    const map: Record<string, StyleAlternative[]> = {}
+    for (const item of selectedItems) {
+      if (unavailableItemIds.has(item.id)) {
+        const excludeIds = selectedItems.map((i) => i.id)
+        map[item.id] = findStyleAlternatives(item, startDate, endDate, vintageItems, excludeIds)
+      }
+    }
+    return map
+  }, [selectedItems, unavailableItemIds, startDate, endDate])
+
+  const sameStyleAvailableMap = useMemo(() => {
+    const map: Record<string, VintageItem[]> = {}
+    for (const item of selectedItems) {
+      if (unavailableItemIds.has(item.id)) {
+        map[item.id] = findSameStyleAvailableSizes(item, startDate, endDate)
+      }
+    }
+    return map
+  }, [selectedItems, unavailableItemIds, startDate, endDate])
 
   const getItemUnavailablePeriods = (itemId: string): DateRange[] => {
     const found = itemAvailability.unavailableItems.find((u) => u.item.id === itemId)
@@ -128,6 +160,12 @@ export default function OutfitBuilderPage() {
       setRentSuccess(false)
       clearBuilderItems()
     }, 3000)
+  }
+
+  const handleReplaceItem = (oldItemId: string, newItem: VintageItem) => {
+    const newItems = builderSelectedItems.map((id) => id === oldItemId ? newItem.id : id)
+    setBuilderItems(newItems)
+    setExpandedAlternatives(null)
   }
 
   const hasError = conflicts.some((c) => c.severity === 'error')
@@ -204,6 +242,7 @@ export default function OutfitBuilderPage() {
                     itemAvailable = avail.available
                     itemConflicts = avail.conflictingPeriods
                   }
+                  const detailedAvail = getItemDetailedAvailability(item, startDate, endDate)
                   return (
                     <button
                       key={item.id}
@@ -239,8 +278,18 @@ export default function OutfitBuilderPage() {
                         {!itemAvailable && (
                           <div className="absolute bottom-1 left-1 right-1">
                             <div className="text-[7px] bg-vintage-crimson/90 text-white px-1 py-0.5 rounded text-center">
-                              {itemConflicts.map(p => `${p.start.slice(5)}~${p.end.slice(5)}`).join(' ')}
+                              {detailedAvail.message}
                             </div>
+                          </div>
+                        )}
+                        {itemAvailable && !itemConflicts.length && (
+                          <div className="absolute bottom-1 right-1">
+                            <span className={cn(
+                              'text-[7px] px-1 py-0.5 rounded border font-medium',
+                              getItemStatusColor(detailedAvail.status)
+                            )}>
+                              {getItemStatusLabel(detailedAvail.status)}
+                            </span>
                           </div>
                         )}
                         <div
@@ -315,6 +364,26 @@ export default function OutfitBuilderPage() {
                 </div>
               </div>
             )}
+
+            {selectedItems.length >= 2 && !consistency.isConsistent && (
+              <div className="bg-white rounded shadow-sm border border-amber-200/50 p-3">
+                <h3 className="text-xs font-display text-amber-700 mb-2 flex items-center gap-1">
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  搭配一致性评估
+                </h3>
+                <div className="space-y-1">
+                  {consistency.sizeConflicts.map((msg, idx) => (
+                    <p key={`size-${idx}`} className="text-[10px] text-amber-700">· {msg}</p>
+                  ))}
+                  {consistency.eraConflicts.map((msg, idx) => (
+                    <p key={`era-${idx}`} className="text-[10px] text-amber-700">· {msg}</p>
+                  ))}
+                  {consistency.styleConflicts.map((msg, idx) => (
+                    <p key={`style-${idx}`} className="text-[10px] text-amber-600">· {msg}</p>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="lg:col-span-2 space-y-4">
@@ -337,61 +406,128 @@ export default function OutfitBuilderPage() {
                     {selectedItems.map((item) => {
                       const available = isItemAvailable(item.id)
                       const periods = getItemUnavailablePeriods(item.id)
+                      const alternatives = alternativesMap[item.id] || []
+                      const sameStyleAvail = sameStyleAvailableMap[item.id] || []
+                      const isExpanded = expandedAlternatives === item.id
                       return (
-                        <div
-                          key={item.id}
-                          className={cn(
-                            'flex items-center gap-2 p-2 rounded-sm',
-                            available ? 'bg-vintage-cream/40' : 'bg-vintage-crimson/5 border border-vintage-crimson/20'
-                          )}
-                        >
-                          <div className={cn(
-                            'w-10 h-12 rounded-sm overflow-hidden flex-shrink-0 relative',
-                            available ? 'bg-vintage-tan/20' : 'bg-vintage-crimson/20 opacity-70'
-                          )}>
-                            <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
-                            {!available && (
-                              <div className="absolute inset-0 bg-vintage-crimson/20 flex items-center justify-center">
-                                <AlertCircle className="w-4 h-4 text-vintage-crimson" />
-                              </div>
+                        <div key={item.id}>
+                          <div
+                            className={cn(
+                              'flex items-center gap-2 p-2 rounded-sm',
+                              available ? 'bg-vintage-cream/40' : 'bg-vintage-crimson/5 border-2 border-vintage-crimson/30'
                             )}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-1">
-                              <p className={cn(
-                                'text-[11px] font-medium truncate',
-                                available ? 'text-vintage-brown' : 'text-vintage-crimson line-through'
-                              )}>{item.name}</p>
-                              {!available && (
-                                <span className="text-[8px] px-1.5 py-0.5 bg-vintage-crimson/10 text-vintage-crimson rounded flex-shrink-0">
-                                  不可租
-                                </span>
-                              )}
-                            </div>
-                            <div className="flex items-center gap-1.5 mt-0.5">
-                              <span className="text-[9px] text-vintage-muted">{categoryLabels[item.category]}</span>
-                              <span className="text-vintage-border/60">·</span>
-                              <span className="text-[9px] text-vintage-muted">{item.size}</span>
-                              {item.color && (
-                                <>
-                                  <span className="text-vintage-border/60">·</span>
-                                  <span className="text-[9px] text-vintage-muted">{item.color}</span>
-                                </>
-                              )}
-                            </div>
-                            {!available && periods.length > 0 && (
-                              <p className="text-[8px] text-vintage-crimson/70 mt-0.5">
-                                已被预约：{periods.map(p => `${p.start}~${p.end}`).join('、')}
-                              </p>
-                            )}
-                          </div>
-                          <DepositTag amount={item.deposit} size="sm" />
-                          <button
-                            onClick={() => toggleBuilderItem(item.id)}
-                            className="p-1 text-vintage-border hover:text-vintage-crimson transition-colors"
                           >
-                            <Minus className="w-3.5 h-3.5" />
-                          </button>
+                            <div className={cn(
+                              'w-10 h-12 rounded-sm overflow-hidden flex-shrink-0 relative',
+                              available ? 'bg-vintage-tan/20' : 'bg-vintage-crimson/20 opacity-70'
+                            )}>
+                              <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                              {!available && (
+                                <div className="absolute inset-0 bg-vintage-crimson/20 flex items-center justify-center">
+                                  <AlertCircle className="w-4 h-4 text-vintage-crimson" />
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-1">
+                                <p className={cn(
+                                  'text-[11px] font-medium truncate',
+                                  available ? 'text-vintage-brown' : 'text-vintage-crimson line-through'
+                                )}>{item.name}</p>
+                                {!available && (
+                                  <span className="text-[8px] px-1.5 py-0.5 bg-vintage-crimson/10 text-vintage-crimson rounded flex-shrink-0">
+                                    不可租
+                                  </span>
+                                )}
+                                <button
+                                  onClick={() => navigate(`/item/${item.id}`)}
+                                  className="p-0.5 text-vintage-muted hover:text-vintage-brown transition-colors flex-shrink-0"
+                                  title="查看详情"
+                                >
+                                  <Eye className="w-3 h-3" />
+                                </button>
+                              </div>
+                              <div className="flex items-center gap-1.5 mt-0.5">
+                                <span className="text-[9px] text-vintage-muted">{categoryLabels[item.category]}</span>
+                                <span className="text-vintage-border/60">·</span>
+                                <span className="text-[9px] text-vintage-muted">{item.size}</span>
+                                {item.color && (
+                                  <>
+                                    <span className="text-vintage-border/60">·</span>
+                                    <span className="text-[9px] text-vintage-muted">{item.color}</span>
+                                  </>
+                                )}
+                              </div>
+                              {!available && periods.length > 0 && (
+                                <p className="text-[8px] text-vintage-crimson/70 mt-0.5">
+                                  已被预约：{periods.map(p => `${p.start}~${p.end}`).join('、')}
+                                </p>
+                              )}
+                              {!available && sameStyleAvail.length > 0 && (
+                                <p className="text-[8px] text-amber-600 mt-0.5">
+                                  同款其他尺码可租：{sameStyleAvail.map(s => s.size).join('、')}
+                                </p>
+                              )}
+                            </div>
+                            <DepositTag amount={item.deposit} size="sm" />
+                            {!available && alternatives.length > 0 && (
+                              <button
+                                onClick={() => setExpandedAlternatives(isExpanded ? null : item.id)}
+                                className={cn(
+                                  'p-1.5 rounded-sm text-[9px] font-medium transition-all flex items-center gap-0.5',
+                                  isExpanded
+                                    ? 'bg-vintage-brown text-vintage-cream'
+                                    : 'bg-vintage-gold/15 text-vintage-brown hover:bg-vintage-gold/25'
+                                )}
+                                title="查看替代方案"
+                              >
+                                <RefreshCw className="w-3 h-3" />
+                              </button>
+                            )}
+                            <button
+                              onClick={() => toggleBuilderItem(item.id)}
+                              className="p-1 text-vintage-border hover:text-vintage-crimson transition-colors"
+                            >
+                              <Minus className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+
+                          {isExpanded && alternatives.length > 0 && (
+                            <div className="mt-1.5 ml-12 space-y-1.5 animate-fadeIn">
+                              <p className="text-[9px] text-vintage-muted px-1">
+                                为你推荐 {alternatives.length} 件风格相近的替代单品（基于年代和品类匹配）：
+                              </p>
+                              {alternatives.map((alt) => (
+                                <div
+                                  key={alt.item.id}
+                                  className="flex items-center gap-2 p-2 rounded-sm bg-emerald-50/70 border border-emerald-200/60"
+                                >
+                                  <div className="w-8 h-10 rounded-sm overflow-hidden bg-vintage-tan/20 flex-shrink-0">
+                                    <img src={alt.item.image} alt={alt.item.name} className="w-full h-full object-cover" />
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-1">
+                                      <p className="text-[10px] font-medium text-vintage-brown truncate">{alt.item.name}</p>
+                                      <EraTag era={alt.item.era} className="!text-[7px] !px-0.5 !py-px" />
+                                    </div>
+                                    <p className="text-[8px] text-emerald-700 mt-0.5">
+                                      匹配度 {alt.matchScore}% · {alt.matchReasons.join('；')}
+                                    </p>
+                                    <p className="text-[8px] text-vintage-muted mt-0.5">
+                                      {alt.item.size} · {categoryLabels[alt.item.category]}
+                                    </p>
+                                  </div>
+                                  <DepositTag amount={alt.item.deposit} size="sm" />
+                                  <button
+                                    onClick={() => handleReplaceItem(item.id, alt.item)}
+                                    className="px-2 py-1 text-[9px] bg-emerald-600 text-white rounded-sm hover:bg-emerald-700 transition-colors font-medium"
+                                  >
+                                    替换
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       )
                     })}
@@ -413,7 +549,13 @@ export default function OutfitBuilderPage() {
                   endDate={endDate}
                   onStartChange={setStartDate}
                   onEndChange={setEndDate}
+                  occupiedDates={occupiedDates}
                 />
+                {selectedItems.length > 0 && occupiedDates.length > 0 && (
+                  <p className="text-[9px] text-vintage-crimson/70 mt-2">
+                    红色日期为当前搭配中某件单品已被预约或维修中的日期，已自动标记为不可选
+                  </p>
+                )}
               </div>
             </div>
 

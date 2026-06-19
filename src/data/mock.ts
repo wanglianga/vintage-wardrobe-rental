@@ -17,6 +17,46 @@ export const vintageItems: VintageItem[] = [
     occupiedPeriods: [
       { start: '2026-06-10', end: '2026-06-17', orderId: 'order-001' }
     ],
+    maintenancePeriods: [],
+    sameStyleGroupId: 'grp-corduroy-jacket',
+    condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
+  },
+  {
+    id: 'item-001-s',
+    name: '灯芯绒猎装夹克',
+    category: 'outerwear',
+    era: '1970s',
+    year: '1972',
+    size: 'S',
+    wearLevel: 3,
+    deposit: 800,
+    color: '驼色',
+    styleTags: ['休闲', '户外', '猎装'],
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2070s%20corduroy%20safari%20jacket%20tan%20brown%20on%20wooden%20hanger%20studio%20photography&image_size=portrait_4_3',
+    description: '经典70年代灯芯绒猎装夹克，四口袋设计，铜扣微氧化，左肘处轻微磨损',
+    occupiedPeriods: [],
+    maintenancePeriods: [],
+    sameStyleGroupId: 'grp-corduroy-jacket',
+    condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
+  },
+  {
+    id: 'item-001-l',
+    name: '灯芯绒猎装夹克',
+    category: 'outerwear',
+    era: '1970s',
+    year: '1972',
+    size: 'L',
+    wearLevel: 3,
+    deposit: 800,
+    color: '驼色',
+    styleTags: ['休闲', '户外', '猎装'],
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2070s%20corduroy%20safari%20jacket%20tan%20brown%20on%20wooden%20hanger%20studio%20photography&image_size=portrait_4_3',
+    description: '经典70年代灯芯绒猎装夹克，四口袋设计，铜扣微氧化，左肘处轻微磨损',
+    occupiedPeriods: [
+      { start: '2026-06-22', end: '2026-06-28', orderId: 'order-future-009' }
+    ],
+    maintenancePeriods: [],
+    sameStyleGroupId: 'grp-corduroy-jacket',
     condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
   },
   {
@@ -36,6 +76,26 @@ export const vintageItems: VintageItem[] = [
       { start: '2026-06-10', end: '2026-06-17', orderId: 'order-001' },
       { start: '2026-06-25', end: '2026-06-30', orderId: 'order-future-001' }
     ],
+    maintenancePeriods: [],
+    sameStyleGroupId: 'grp-wide-jeans',
+    condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
+  },
+  {
+    id: 'item-002-m',
+    name: '高腰阔腿牛仔裤',
+    category: 'bottoms',
+    era: '1980s',
+    year: '1985',
+    size: 'M',
+    wearLevel: 4,
+    deposit: 500,
+    color: '牛仔蓝',
+    styleTags: ['休闲', '街头', '复古'],
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2080s%20high%20waist%20wide%20leg%20denim%20jeans%20faded%20blue%20studio%20photography&image_size=portrait_4_3',
+    description: '80年代经典高腰阔腿裤，水洗渐变自然，右膝轻微破洞',
+    occupiedPeriods: [],
+    maintenancePeriods: [],
+    sameStyleGroupId: 'grp-wide-jeans',
     condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
   },
   {
@@ -55,7 +115,29 @@ export const vintageItems: VintageItem[] = [
       { start: '2026-06-05', end: '2026-06-12', orderId: 'order-002' },
       { start: '2026-06-20', end: '2026-06-23', orderId: 'order-future-002' }
     ],
+    maintenancePeriods: [
+      { start: '2026-06-28', end: '2026-07-05' }
+    ],
+    sameStyleGroupId: 'grp-silk-shirt',
     condition: { stains: true, missingButtons: false, zipperIssue: false, liningIssue: false }
+  },
+  {
+    id: 'item-003-m',
+    name: '真丝印花衬衫',
+    category: 'tops',
+    era: '1960s',
+    year: '1967',
+    size: 'M',
+    wearLevel: 2,
+    deposit: 1200,
+    color: '米白印花',
+    styleTags: ['优雅', '晚宴', '波西米亚'],
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2060s%20silk%20floral%20print%20shirt%20cream%20background%20studio%20photography&image_size=portrait_4_3',
+    description: '60年代真丝印花衬衫，佩斯利花纹，面料柔软，领口微泛黄',
+    occupiedPeriods: [],
+    maintenancePeriods: [],
+    sameStyleGroupId: 'grp-silk-shirt',
+    condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
   },
   {
     id: 'item-004',
@@ -74,7 +156,29 @@ export const vintageItems: VintageItem[] = [
       { start: '2026-06-08', end: '2026-06-15', orderId: 'order-003' },
       { start: '2026-07-01', end: '2026-07-05', orderId: 'order-future-003' }
     ],
+    maintenancePeriods: [],
+    sameStyleGroupId: 'grp-tweed-blazer',
     condition: { stains: false, missingButtons: true, zipperIssue: false, liningIssue: false }
+  },
+  {
+    id: 'item-004-l',
+    name: '粗花呢西装外套',
+    category: 'outerwear',
+    era: '1950s',
+    year: '1956',
+    size: 'L',
+    wearLevel: 2,
+    deposit: 1500,
+    color: '人字纹棕',
+    styleTags: ['正式', '英伦', '学院'],
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2050s%20tweed%20blazer%20herringbone%20brown%20on%20wooden%20hanger%20studio&image_size=portrait_4_3',
+    description: '50年代英伦粗花呢西装外套，人字纹编织，肘部皮质补丁',
+    occupiedPeriods: [],
+    maintenancePeriods: [
+      { start: '2026-06-19', end: '2026-06-23' }
+    ],
+    sameStyleGroupId: 'grp-tweed-blazer',
+    condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
   },
   {
     id: 'item-005',
@@ -92,6 +196,26 @@ export const vintageItems: VintageItem[] = [
     occupiedPeriods: [
       { start: '2026-06-12', end: '2026-06-19', orderId: 'order-005' }
     ],
+    maintenancePeriods: [],
+    sameStyleGroupId: 'grp-embroidered-dress',
+    condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
+  },
+  {
+    id: 'item-005-m',
+    name: '刺绣连衣裙',
+    category: 'dress',
+    era: '1970s',
+    year: '1974',
+    size: 'M',
+    wearLevel: 1,
+    deposit: 1800,
+    color: '大地色系',
+    styleTags: ['波西米亚', '度假', '优雅'],
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2070s%20embroidered%20maxi%20dress%20earth%20tones%20bohemian%20studio%20photography&image_size=portrait_4_3',
+    description: '70年代波西米亚刺绣长裙，手工花卉刺绣，品相极佳',
+    occupiedPeriods: [],
+    maintenancePeriods: [],
+    sameStyleGroupId: 'grp-embroidered-dress',
     condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
   },
   {
@@ -108,7 +232,27 @@ export const vintageItems: VintageItem[] = [
     image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2070s%20suede%20fringe%20vest%20tan%20leather%20bohemian%20studio%20photography&image_size=portrait_4_3',
     description: '70年代麂皮流苏背心，自然磨损质感，流苏完整',
     occupiedPeriods: [],
+    maintenancePeriods: [],
+    sameStyleGroupId: 'grp-suede-vest',
     condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: true }
+  },
+  {
+    id: 'item-006-s',
+    name: '麂皮流苏背心',
+    category: 'tops',
+    era: '1970s',
+    year: '1973',
+    size: 'S',
+    wearLevel: 3,
+    deposit: 900,
+    color: '驼色',
+    styleTags: ['波西米亚', '嬉皮', '休闲'],
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2070s%20suede%20fringe%20vest%20tan%20leather%20bohemian%20studio%20photography&image_size=portrait_4_3',
+    description: '70年代麂皮流苏背心，自然磨损质感，流苏完整',
+    occupiedPeriods: [],
+    maintenancePeriods: [],
+    sameStyleGroupId: 'grp-suede-vest',
+    condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
   },
   {
     id: 'item-007',
@@ -126,7 +270,29 @@ export const vintageItems: VintageItem[] = [
     occupiedPeriods: [
       { start: '2026-06-01', end: '2026-06-08', orderId: 'order-004' }
     ],
+    maintenancePeriods: [],
+    sameStyleGroupId: 'grp-workwear-overalls',
     condition: { stains: true, missingButtons: false, zipperIssue: true, liningIssue: false }
+  },
+  {
+    id: 'item-007-m',
+    name: '工装背带裤',
+    category: 'bottoms',
+    era: '1940s',
+    year: '1943',
+    size: 'M',
+    wearLevel: 4,
+    deposit: 600,
+    color: '靛蓝',
+    styleTags: ['工装', '街头', '复古'],
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2040s%20workwear%20overalls%20denim%20faded%20indigo%20studio%20photography&image_size=portrait_4_3',
+    description: '40年代工装背带裤，重磅丹宁，铜铆钉，自然岁月痕迹',
+    occupiedPeriods: [],
+    maintenancePeriods: [
+      { start: '2026-06-20', end: '2026-06-25' }
+    ],
+    sameStyleGroupId: 'grp-workwear-overalls',
+    condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
   },
   {
     id: 'item-008',
@@ -145,6 +311,44 @@ export const vintageItems: VintageItem[] = [
       { start: '2026-06-05', end: '2026-06-12', orderId: 'order-002' },
       { start: '2026-06-22', end: '2026-06-26', orderId: 'order-future-004' }
     ],
+    maintenancePeriods: [],
+    sameStyleGroupId: 'grp-velvet-jacket',
+    condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
+  },
+  {
+    id: 'item-008-s',
+    name: '丝绒晚宴外套',
+    category: 'outerwear',
+    era: '1960s',
+    year: '1968',
+    size: 'S',
+    wearLevel: 2,
+    deposit: 1600,
+    color: '酒红',
+    styleTags: ['晚宴', '优雅', '复古'],
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2060s%20velvet%20dinner%20jacket%20deep%20burgundy%20studio%20photography&image_size=portrait_4_3',
+    description: '60年代丝绒晚宴外套，深酒红，缎面翻领，品相优秀',
+    occupiedPeriods: [],
+    maintenancePeriods: [],
+    sameStyleGroupId: 'grp-velvet-jacket',
+    condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
+  },
+  {
+    id: 'item-008-l',
+    name: '丝绒晚宴外套',
+    category: 'outerwear',
+    era: '1960s',
+    year: '1968',
+    size: 'L',
+    wearLevel: 2,
+    deposit: 1600,
+    color: '酒红',
+    styleTags: ['晚宴', '优雅', '复古'],
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2060s%20velvet%20dinner%20jacket%20deep%20burgundy%20studio%20photography&image_size=portrait_4_3',
+    description: '60年代丝绒晚宴外套，深酒红，缎面翻领，品相优秀',
+    occupiedPeriods: [],
+    maintenancePeriods: [],
+    sameStyleGroupId: 'grp-velvet-jacket',
     condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
   },
   {
@@ -164,6 +368,26 @@ export const vintageItems: VintageItem[] = [
       { start: '2026-06-08', end: '2026-06-15', orderId: 'order-003' },
       { start: '2026-06-28', end: '2026-07-02', orderId: 'order-future-005' }
     ],
+    maintenancePeriods: [],
+    sameStyleGroupId: 'grp-tartan-skirt',
+    condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
+  },
+  {
+    id: 'item-009-m',
+    name: '格纹毛呢半裙',
+    category: 'bottoms',
+    era: '1960s',
+    year: '1965',
+    size: 'M',
+    wearLevel: 2,
+    deposit: 700,
+    color: '红绿格纹',
+    styleTags: ['学院', '英伦', '优雅'],
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2060s%20tartan%20wool%20skirt%20A-line%20green%20red%20studio%20photography&image_size=portrait_4_3',
+    description: '60年代A字格纹半裙，苏格兰格纹，羊毛面料，拉链顺滑',
+    occupiedPeriods: [],
+    maintenancePeriods: [],
+    sameStyleGroupId: 'grp-tartan-skirt',
     condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
   },
   {
@@ -182,7 +406,47 @@ export const vintageItems: VintageItem[] = [
     occupiedPeriods: [
       { start: '2026-06-08', end: '2026-06-15', orderId: 'order-003' }
     ],
+    maintenancePeriods: [],
+    sameStyleGroupId: 'grp-cowboy-boots',
     condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: true }
+  },
+  {
+    id: 'item-010-37',
+    name: '牛仔短靴',
+    category: 'shoes',
+    era: '1980s',
+    year: '1982',
+    size: '37',
+    wearLevel: 3,
+    deposit: 1000,
+    color: '棕色',
+    styleTags: ['西部', '街头', '复古'],
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2080s%20cowboy%20boots%20brown%20leather%20embroidered%20studio%20photography&image_size=portrait_4_3',
+    description: '80年代牛仔短靴，棕色皮革，手工刺绣花纹，鞋底磨损适中',
+    occupiedPeriods: [],
+    maintenancePeriods: [],
+    sameStyleGroupId: 'grp-cowboy-boots',
+    condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
+  },
+  {
+    id: 'item-010-39',
+    name: '牛仔短靴',
+    category: 'shoes',
+    era: '1980s',
+    year: '1982',
+    size: '39',
+    wearLevel: 3,
+    deposit: 1000,
+    color: '棕色',
+    styleTags: ['西部', '街头', '复古'],
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2080s%20cowboy%20boots%20brown%20leather%20embroidered%20studio%20photography&image_size=portrait_4_3',
+    description: '80年代牛仔短靴，棕色皮革，手工刺绣花纹，鞋底磨损适中',
+    occupiedPeriods: [
+      { start: '2026-06-24', end: '2026-06-30', orderId: 'order-future-010' }
+    ],
+    maintenancePeriods: [],
+    sameStyleGroupId: 'grp-cowboy-boots',
+    condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
   },
   {
     id: 'item-011',
@@ -201,6 +465,8 @@ export const vintageItems: VintageItem[] = [
       { start: '2026-06-10', end: '2026-06-17', orderId: 'order-001' },
       { start: '2026-06-12', end: '2026-06-19', orderId: 'order-005' }
     ],
+    maintenancePeriods: [],
+    sameStyleGroupId: undefined,
     condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
   },
   {
@@ -219,6 +485,8 @@ export const vintageItems: VintageItem[] = [
     occupiedPeriods: [
       { start: '2026-06-19', end: '2026-06-24', orderId: 'order-future-006' }
     ],
+    maintenancePeriods: [],
+    sameStyleGroupId: undefined,
     condition: { stains: false, missingButtons: true, zipperIssue: false, liningIssue: true }
   },
   {
@@ -235,6 +503,8 @@ export const vintageItems: VintageItem[] = [
     image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2050s%20leather%20doctor%20bag%20dark%20brown%20brass%20hardware%20studio%20photography&image_size=portrait_4_3',
     description: '50年代经典医生包款式，牛皮材质，黄铜五金，品相完好',
     occupiedPeriods: [],
+    maintenancePeriods: [],
+    sameStyleGroupId: undefined,
     condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
   },
   {
@@ -253,6 +523,8 @@ export const vintageItems: VintageItem[] = [
     occupiedPeriods: [
       { start: '2026-06-21', end: '2026-06-27', orderId: 'order-future-007' }
     ],
+    maintenancePeriods: [],
+    sameStyleGroupId: undefined,
     condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
   },
   {
@@ -271,6 +543,62 @@ export const vintageItems: VintageItem[] = [
     occupiedPeriods: [
       { start: '2026-06-24', end: '2026-06-28', orderId: 'order-future-008' }
     ],
+    maintenancePeriods: [],
+    sameStyleGroupId: undefined,
+    condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
+  },
+  {
+    id: 'item-alt-001',
+    name: '麂皮狩猎夹克',
+    category: 'outerwear',
+    era: '1970s',
+    year: '1975',
+    size: 'M',
+    wearLevel: 2,
+    deposit: 950,
+    color: '深棕',
+    styleTags: ['休闲', '户外', '猎装'],
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2070s%20suede%20hunting%20jacket%20dark%20brown%20leather%20studio%20photography&image_size=portrait_4_3',
+    description: '70年代麂皮狩猎夹克，深棕色，翻领设计，皮质纽扣',
+    occupiedPeriods: [],
+    maintenancePeriods: [],
+    sameStyleGroupId: undefined,
+    condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
+  },
+  {
+    id: 'item-alt-002',
+    name: '羊毛直筒裤',
+    category: 'bottoms',
+    era: '1970s',
+    year: '1976',
+    size: 'M',
+    wearLevel: 2,
+    deposit: 550,
+    color: '驼色',
+    styleTags: ['休闲', '复古', '正式'],
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2070s%20wool%20straight%20leg%20trousers%20camel%20tan%20studio%20photography&image_size=portrait_4_3',
+    description: '70年代羊毛直筒裤，驼色，裤型挺括，压折线清晰',
+    occupiedPeriods: [],
+    maintenancePeriods: [],
+    sameStyleGroupId: undefined,
+    condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
+  },
+  {
+    id: 'item-alt-003',
+    name: '雪纺波点衬衫',
+    category: 'tops',
+    era: '1960s',
+    year: '1966',
+    size: 'M',
+    wearLevel: 1,
+    deposit: 900,
+    color: '白底黑点',
+    styleTags: ['优雅', '复古', '学院'],
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=vintage%2060s%20chiffon%20polka%20dot%20blouse%20white%20black%20dots%20studio%20photography&image_size=portrait_4_3',
+    description: '60年代雪纺波点衬衫，蝴蝶结系带，面料轻盈飘逸',
+    occupiedPeriods: [],
+    maintenancePeriods: [],
+    sameStyleGroupId: undefined,
     condition: { stains: false, missingButtons: false, zipperIssue: false, liningIssue: false }
   }
 ]

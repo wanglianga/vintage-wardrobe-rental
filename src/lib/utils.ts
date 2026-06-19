@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import type { VintageItem, OutfitConflict, ReturnCheckItem, DamageAssessment, DamageLevel, DateRange } from '@/types'
+import type { VintageItem, OutfitConflict, ReturnCheckItem, DamageAssessment, DamageLevel, DateRange, ItemDetailedAvailability, ItemStatus, StyleAlternative, OutfitConsistencyResult } from '@/types'
+import { vintageItems } from '@/data/mock'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -266,4 +267,257 @@ export function getDamageLevelColor(level: DamageLevel): string {
     severe: 'text-vintage-crimson bg-vintage-crimson/10 border-vintage-crimson/30'
   }
   return colors[level]
+}
+
+export function getItemDetailedAvailability(
+  item: VintageItem,
+  startDate: string | null,
+  endDate: string | null
+): ItemDetailedAvailability {
+  if (!startDate || !endDate) {
+    return {
+      status: 'available',
+      available: true,
+      conflictingPeriods: [],
+      maintenancePeriods: [],
+      message: '可租赁'
+    }
+  }
+
+  const requestedRange: DateRange = { start: startDate, end: endDate }
+  const conflictingPeriods: DateRange[] = []
+  const maintenanceConflicts: DateRange[] = []
+
+  for (const period of item.occupiedPeriods) {
+    if (isDateRangeOverlapping(requestedRange, period)) {
+      conflictingPeriods.push(period)
+    }
+  }
+
+  if (item.maintenancePeriods) {
+    for (const period of item.maintenancePeriods) {
+      if (isDateRangeOverlapping(requestedRange, period)) {
+        maintenanceConflicts.push(period)
+      }
+    }
+  }
+
+  if (maintenanceConflicts.length > 0) {
+    const periodStr = maintenanceConflicts
+      .map(p => `${p.start.slice(5)}~${p.end.slice(5)}`)
+      .join('、')
+    return {
+      status: 'maintenance',
+      available: false,
+      conflictingPeriods,
+      maintenancePeriods: maintenanceConflicts,
+      message: `维修中（${periodStr}）`
+    }
+  }
+
+  if (conflictingPeriods.length > 0) {
+    const periodStr = conflictingPeriods
+      .map(p => `${p.start.slice(5)}~${p.end.slice(5)}`)
+      .join('、')
+    return {
+      status: 'rented',
+      available: false,
+      conflictingPeriods,
+      maintenancePeriods: [],
+      message: `已租出（${periodStr}）`
+    }
+  }
+
+  return {
+    status: 'available',
+    available: true,
+    conflictingPeriods: [],
+    maintenancePeriods: [],
+    message: '可租赁'
+  }
+}
+
+export function getItemStatusLabel(status: ItemStatus): string {
+  const labels: Record<ItemStatus, string> = {
+    available: '可租',
+    rented: '已租出',
+    maintenance: '维修中'
+  }
+  return labels[status]
+}
+
+export function getItemStatusColor(status: ItemStatus): string {
+  const colors: Record<ItemStatus, string> = {
+    available: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+    rented: 'bg-vintage-crimson/10 text-vintage-crimson border-vintage-crimson/20',
+    maintenance: 'bg-amber-100 text-amber-700 border-amber-200'
+  }
+  return colors[status]
+}
+
+export function findSameStyleItems(item: VintageItem, allItems: VintageItem[] = vintageItems): VintageItem[] {
+  if (!item.sameStyleGroupId) return []
+  return allItems.filter(
+    (i) => i.sameStyleGroupId === item.sameStyleGroupId && i.id !== item.id
+  )
+}
+
+export function findSameStyleAvailableSizes(
+  item: VintageItem,
+  startDate: string | null,
+  endDate: string | null,
+  allItems: VintageItem[] = vintageItems
+): VintageItem[] {
+  const sameStyle = findSameStyleItems(item, allItems)
+  if (!startDate || !endDate) return sameStyle
+  return sameStyle.filter((i) => {
+    const avail = getItemDetailedAvailability(i, startDate, endDate)
+    return avail.available
+  })
+}
+
+export function findStyleAlternatives(
+  item: VintageItem,
+  startDate: string | null,
+  endDate: string | null,
+  allItems: VintageItem[] = vintageItems,
+  excludeIds: string[] = []
+): StyleAlternative[] {
+  const alternatives: StyleAlternative[] = []
+
+  for (const candidate of allItems) {
+    if (candidate.id === item.id) continue
+    if (excludeIds.includes(candidate.id)) continue
+    if (candidate.category !== item.category) continue
+
+    if (startDate && endDate) {
+      const avail = getItemDetailedAvailability(candidate, startDate, endDate)
+      if (!avail.available) continue
+    }
+
+    let score = 0
+    const reasons: string[] = []
+
+    if (candidate.era === item.era) {
+      score += 40
+      reasons.push(`同年代（${item.era}）`)
+    } else {
+      const eraA = parseInt(item.era)
+      const eraB = parseInt(candidate.era)
+      if (Math.abs(eraA - eraB) <= 10) {
+        score += 20
+        reasons.push('年代相近')
+      }
+    }
+
+    if (candidate.styleTags && item.styleTags) {
+      const commonTags = candidate.styleTags.filter((t) => item.styleTags?.includes(t))
+      if (commonTags.length > 0) {
+        score += commonTags.length * 15
+        reasons.push(`风格标签匹配：${commonTags.join('、')}`)
+      }
+    }
+
+    if (score > 0) {
+      alternatives.push({
+        item: candidate,
+        matchScore: score,
+        matchReasons: reasons
+      })
+    }
+  }
+
+  alternatives.sort((a, b) => b.matchScore - a.matchScore)
+  return alternatives.slice(0, 5)
+}
+
+export function evaluateOutfitConsistency(items: VintageItem[]): OutfitConsistencyResult {
+  const sizeConflicts: string[] = []
+  const styleConflicts: string[] = []
+  const eraConflicts: string[] = []
+
+  if (items.length < 2) {
+    return {
+      isConsistent: true,
+      sizeConflicts: [],
+      styleConflicts: [],
+      eraConflicts: []
+    }
+  }
+
+  for (let i = 0; i < items.length; i++) {
+    for (let j = i + 1; j < items.length; j++) {
+      const itemA = items[i]
+      const itemB = items[j]
+
+      if (itemA.size !== 'ONE SIZE' && itemB.size !== 'ONE SIZE') {
+        const compatibleSizes = sizeGroups[itemA.size] || []
+        if (!compatibleSizes.includes(itemB.size)) {
+          sizeConflicts.push(
+            `「${itemA.name}」(${itemA.size}) 与「${itemB.name}」(${itemB.size}) 尺码可能不匹配`
+          )
+        }
+      }
+
+      if (itemA.era !== itemB.era) {
+        const eraA = parseInt(itemA.era)
+        const eraB = parseInt(itemB.era)
+        if (Math.abs(eraA - eraB) >= 20) {
+          eraConflicts.push(
+            `「${itemA.name}」(${itemA.era}) 与「${itemB.name}」(${itemB.era}) 年代跨度较大`
+          )
+        }
+      }
+
+      if (itemA.styleTags && itemB.styleTags) {
+        const commonTags = itemA.styleTags.filter((t) => itemB.styleTags?.includes(t))
+        if (commonTags.length === 0) {
+          styleConflicts.push(
+            `「${itemA.name}」与「${itemB.name}」风格标签无交集`
+          )
+        }
+      }
+    }
+  }
+
+  return {
+    isConsistent: sizeConflicts.length === 0 && eraConflicts.length === 0,
+    sizeConflicts,
+    styleConflicts,
+    eraConflicts
+  }
+}
+
+export function getItemOccupiedDates(item: VintageItem): string[] {
+  const dates: string[] = []
+  const allPeriods = [...item.occupiedPeriods, ...(item.maintenancePeriods || [])]
+
+  for (const period of allPeriods) {
+    const start = new Date(period.start)
+    const end = new Date(period.end)
+    const current = new Date(start)
+    while (current <= end) {
+      const dateStr = formatDateStr(current)
+      dates.push(dateStr)
+      current.setDate(current.getDate() + 1)
+    }
+  }
+
+  return dates
+}
+
+function formatDateStr(date: Date): string {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+export function getItemsCombinedOccupiedDates(items: VintageItem[]): string[] {
+  const dateSet = new Set<string>()
+  for (const item of items) {
+    const dates = getItemOccupiedDates(item)
+    dates.forEach((d) => dateSet.add(d))
+  }
+  return Array.from(dateSet)
 }

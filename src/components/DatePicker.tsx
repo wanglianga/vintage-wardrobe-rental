@@ -8,6 +8,7 @@ interface DatePickerProps {
   onStartChange: (date: string) => void
   onEndChange: (date: string) => void
   returnDate?: string | null
+  occupiedDates?: string[]
 }
 
 function getDaysInMonth(year: number, month: number) {
@@ -29,7 +30,8 @@ export default function DatePicker({
   endDate,
   onStartChange,
   onEndChange,
-  returnDate
+  returnDate,
+  occupiedDates = []
 }: DatePickerProps) {
   const today = new Date()
   const [viewYear, setViewYear] = useState(today.getFullYear())
@@ -71,6 +73,7 @@ export default function DatePicker({
     const dateObj = new Date(dateStr)
     const todayStr = formatDate(today.getFullYear(), today.getMonth(), today.getDate())
     if (dateObj < new Date(todayStr)) return
+    if (occupiedDates.includes(dateStr)) return
 
     if (!startDate || (startDate && endDate)) {
       onStartChange(dateStr)
@@ -113,6 +116,11 @@ export default function DatePicker({
     return dateStr < todayStr
   }
 
+  const isOccupied = (day: number) => {
+    const dateStr = formatDate(viewYear, viewMonth, day)
+    return occupiedDates.includes(dateStr)
+  }
+
   return (
     <div className="bg-white rounded shadow-sm border border-vintage-border/30 p-3">
       <div className="flex items-center justify-between mb-3">
@@ -146,24 +154,30 @@ export default function DatePicker({
           const end = isEnd(day)
           const range = isInRange(day)
           const ret = isReturn(day)
+          const occupied = isOccupied(day)
+          const disabled = past || occupied
 
           return (
             <button
               key={day}
               onClick={() => handleDayClick(day)}
-              disabled={past}
+              disabled={disabled}
               className={cn(
                 'relative w-full aspect-square flex items-center justify-center text-[11px] rounded-sm transition-all',
                 past && 'text-vintage-border/50 cursor-not-allowed',
-                !past && !start && !end && !range && !ret && 'text-vintage-brown hover:bg-vintage-tan/20',
+                occupied && !start && !end && !past && 'bg-vintage-crimson/20 text-vintage-crimson/60 cursor-not-allowed line-through',
+                !disabled && !start && !end && !range && !ret && 'text-vintage-brown hover:bg-vintage-tan/20',
                 start && 'bg-vintage-brown text-vintage-cream font-medium',
                 end && 'bg-vintage-crimson text-white font-medium',
                 range && 'bg-vintage-gold/15 text-vintage-brown',
-                ret && !start && !end && 'ring-2 ring-vintage-crimson/50 text-vintage-crimson font-medium'
+                ret && !start && !end && !occupied && 'ring-2 ring-vintage-crimson/50 text-vintage-crimson font-medium'
               )}
             >
               {day}
-              {ret && !start && !end && (
+              {occupied && !start && !end && !past && (
+                <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-vintage-crimson" />
+              )}
+              {ret && !start && !end && !occupied && (
                 <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-vintage-crimson" />
               )}
             </button>
@@ -171,7 +185,7 @@ export default function DatePicker({
         })}
       </div>
 
-      <div className="mt-3 flex items-center gap-4 text-[10px] text-vintage-muted">
+      <div className="mt-3 flex items-center gap-3 flex-wrap text-[10px] text-vintage-muted">
         <span className="flex items-center gap-1">
           <span className="w-2.5 h-2.5 rounded-sm bg-vintage-brown" /> 起租日
         </span>
@@ -181,6 +195,11 @@ export default function DatePicker({
         <span className="flex items-center gap-1">
           <span className="w-2.5 h-2.5 rounded-sm bg-vintage-gold/30" /> 租期内
         </span>
+        {occupiedDates.length > 0 && (
+          <span className="flex items-center gap-1">
+            <span className="w-2.5 h-2.5 rounded-sm bg-vintage-crimson/20" /> 已占用
+          </span>
+        )}
       </div>
 
       {startDate && endDate && rentalDays > 0 && (
